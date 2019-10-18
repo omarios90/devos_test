@@ -17,7 +17,7 @@ def get_num_type_bulk_assertion(num_list, expected_mapping):
     result = get_number_type_bulk(num_list)
     for num in result:
         assert(expected_mapping[num] == result[num]), "expected num type is %s but we got %s" % (
-            expected_num_type, result)
+            expected_mapping[num], result[num])
 
 
 def test_get_divisors():
