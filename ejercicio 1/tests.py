@@ -1,4 +1,4 @@
-from main import get_divisors, get_number_type, NumType
+from main import get_divisors, get_number_type, get_number_type_bulk, NumType
 
 
 def get_divisors_assertion(num, expected_divisors):
@@ -11,6 +11,13 @@ def get_num_type_assertion(num, expected_num_type):
     result = get_number_type(num)
     assert(expected_num_type == result), "expected num type is %s but we got %s" % (
         expected_num_type, result)
+
+
+def get_num_type_bulk_assertion(num_list, expected_mapping):
+    result = get_number_type_bulk(num_list)
+    for num in result:
+        assert(expected_mapping[num] == result[num]), "expected num type is %s but we got %s" % (
+            expected_num_type, result)
 
 
 def test_get_divisors():
@@ -31,5 +38,19 @@ def test_get_num_type():
     print("success in get_num_type tests")
 
 
+def test_get_num_type_bulk():
+    get_num_type_bulk_assertion(
+        [6, 15, 32, 36, 77],
+        {
+            6: NumType.PERFECT,
+            15: NumType.DEFICIENT,
+            32: NumType.DEFICIENT,
+            36: NumType.ABUNDANT,
+            77: NumType.DEFICIENT
+        })
+    print("success in get_num_type_bulk test")
+
+
 test_get_divisors()
 test_get_num_type()
+test_get_num_type_bulk()

@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Set
+from typing import Set, List, Mapping
 
 
 class NumType(Enum):
@@ -27,3 +27,7 @@ def get_number_type(num: int) -> NumType:
     elif divisors_sum > num:
         return NumType.ABUNDANT
     return NumType.PERFECT
+
+
+def get_number_type_bulk(num_list: List[int]) -> Mapping[int, NumType]:
+    return {num: get_number_type(num) for num in num_list}
