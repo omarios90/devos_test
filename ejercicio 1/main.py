@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Set
 
 
 class NumType(Enum):
@@ -7,7 +8,7 @@ class NumType(Enum):
     DEFICIENT = 2
 
 
-def get_divisors(num):
+def get_divisors(num: int) -> Set[int]:
     result = set()
     result.add(1)
     for i in range(2, int(num ** 0.5) + 1):
@@ -18,7 +19,7 @@ def get_divisors(num):
     return result
 
 
-def get_number_type(num):
+def get_number_type(num: int) -> NumType:
     divisors = get_divisors(num)
     divisors_sum = sum(divisors)
     if divisors_sum < num:
