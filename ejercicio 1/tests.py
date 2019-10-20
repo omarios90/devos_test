@@ -1,4 +1,4 @@
-from main import get_divisors, get_number_type, get_number_type_bulk, NumType
+from main import get_divisors, get_number_type, get_number_type_bulk, NumType, is_prime, get_primes_until
 
 
 def get_divisors_assertion(num, expected_divisors):
@@ -51,6 +51,23 @@ def test_get_num_type_bulk():
     print("success in get_num_type_bulk test")
 
 
+def test_is_prime():
+    assert(is_prime(3)), "wrong"
+    assert(is_prime(5)), "wrong"
+    assert(not is_prime(20)), "wrong"
+    assert(not is_prime(1)), "wrong"
+    print("success in is_prime")
+
+
+def test_get_primes_until():
+    assert(get_primes_until(3) == set([2, 3])), "wrong"
+    assert(get_primes_until(5) == set([2, 3, 5])), "wrong"
+    assert(get_primes_until(13) == set([2, 3, 5, 7, 11, 13])), "wrong"
+    print("success in get_primes_until")
+
+
 test_get_divisors()
 test_get_num_type()
 test_get_num_type_bulk()
+test_is_prime()
+test_get_primes_until()

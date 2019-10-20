@@ -19,6 +19,23 @@ def get_divisors(num: int) -> Set[int]:
     return result
 
 
+def get_primes_until(num: int) -> Set[int]:
+    result = set()
+    for i in range(2, num + 1):
+        if is_prime(i):
+            result.add(i)
+    return result
+
+
+def is_prime(num: int) -> bool:
+    if num < 2:
+        return False
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
+
+
 def get_number_type(num: int) -> NumType:
     divisors = get_divisors(num)
     divisors_sum = sum(divisors)
