@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 const prefixPath = "..";
-const mainPath = "/public";
+const mainPath = "/../public";
 const indexPath = "/index.html";
 
 const mimeTypes = {

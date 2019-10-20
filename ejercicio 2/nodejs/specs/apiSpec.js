@@ -7,19 +7,19 @@ const httpModule = https;
 
 const apiRoutes = [{
   path: `${apiRoute}/v1/source/1`,
-  url: "https://s3.amazonaws.com/logtrust-static/test/test/data1.json",
+  aws: "https://s3.amazonaws.com/logtrust-static/test/test/data1.json",
   mock: "https://next.json-generator.com/api/templates/NyIFlgmFD",
   local: `${internalMockRoute}/serie1.json`,
   contentType: "application/json"
 }, {
   path: `${apiRoute}/v1/source/2`,
-  url: "https://s3.amazonaws.com/logtrust-static/test/test/data2.json",
+  aws: "https://s3.amazonaws.com/logtrust-static/test/test/data2.json",
   mock: "https://next.json-generator.com/api/templates/VkfFWxQtP",
   local: `${internalMockRoute}/serie2.json`,
   contentType: "application/json"
 }, {
   path: `${apiRoute}/v1/source/3`,
-  url: "https://s3.amazonaws.com/logtrust-static/test/test/data3.json",
+  aws: "https://s3.amazonaws.com/logtrust-static/test/test/data3.json",
   mock: "https://next.json-generator.com/api/templates/4ystfemFw",
   local: `${internalMockRoute}/serie3.json`,
   contentType: "application/json"
@@ -49,7 +49,6 @@ function makeGetRequest(url) {
   })
 }
 
-
 module.exports = ({ url, response }) => {
   const self = {
     route: null,
@@ -65,7 +64,7 @@ module.exports = ({ url, response }) => {
       else reject();
     }),
     action: () => {
-      makeGetRequest(self.route.url)
+      makeGetRequest(self.route.aws)
         .then((content) => {
           response.writeHead(200, { "Content-Type": self.route.contentType });
           response.end(JSON.stringify(content), "utf-8");
