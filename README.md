@@ -41,10 +41,15 @@ Inconveniente:
 No tengo permisos a la fuente de datos. Voy a crear un backend que sirva los 3 json guiándome de la estructura explicada en el pdf con el fin de emular un servicio parecido. (PREPARADO PERO NO SE HA PODIDO PROBAR)
 ```
 #### 2. Crear el html para pintar los datos
+En la carpeta public/.  
 
-### Demo
+### Solución final
+1. Existe un backend en la carpeta "nodejs/" que tiene una api. Los datos que provee la api pueden ser: locales (nodejs/mocks/*.json), de next.json-generator o de aws (los que se han provisto en el enunciado). Si se quiere cambiar a uno de los 3 se necesita cambiar el código - esto se podría haber hecho por cambios de configuración en el package.json pero no era la finalidad de la prueba hacer un backend perfecto. Se hizo este backend para poder trabajar con datos falsos porque las urls de aws devolvían 403.  
+Para ejecutarlo seguir estas indicaciones:
 ```
 Dentro de la carpeta "ejercicio 2/nodejs" abrir un terminal:
 - "yarn install" o "npm install" (si es la primera vez)
 - "yarn start" o "npm start" (para ejecutar el servidor)
 ```
+2. Existe un frontend en la carpeta "public/" que se puede ejecutar de 2 maneras: abriendo /public/index.html en un navegador o ejecutando el backend. En el frontend se intentó hacer código reutilizable y fácil de modificar. Se aplicaron principios SOLID para mejor mantenibilidad y reutilización de código. Se usaron algunas variaciones de patrones de diseño como strategy y factory para aumentar la cohesión y reducir el acomplamiento, aunque ahora mismo, las estrategias están acopladas a la estructura de los datos que se indicaron en el enunciado.   
+Hice el código con el objetivo de hacer un framework que gestione las peticiones y tratamiento de datos - posiblemente aplicar patrones para este ejercicio es overkill, pero podéis mirar la versión simple en el git.
