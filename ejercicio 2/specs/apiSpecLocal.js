@@ -8,6 +8,7 @@ module.exports = ({ url, response }) => {
   };
 
   return {
+    self,
     isSatisfied: () => new Promise((resolve, reject) => {
       self.apiSpec.isSatisfied()
         .then(() => {

@@ -1,4 +1,5 @@
-const ApiSpec = require("../specs/apiSpecLocal");
+const ApiSpec = require("../specs/apiSpec");
+const ApiSpecLocal = require("../specs/apiSpecLocal");
 const StaticSpec = require("../specs/staticSpec");
 
 module.exports = (url, response) => {

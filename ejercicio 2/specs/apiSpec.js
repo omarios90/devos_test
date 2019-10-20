@@ -65,10 +65,10 @@ module.exports = ({ url, response }) => {
       else reject();
     }),
     action: () => {
-      makeGetRequest(self.route.mock)
+      makeGetRequest(self.route.url)
         .then((content) => {
           response.writeHead(200, { "Content-Type": self.route.contentType });
-          response.end(content.generateJSON, "utf-8");
+          response.end(JSON.stringify(content), "utf-8");
         });
     }
   };

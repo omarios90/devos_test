@@ -1,135 +1,75 @@
-function generateChart(data) {
+function itemManager(strategies) {
+  var normalizeItem = function (rawDate, rawCat, rawValue) {
+    var cat = rawCat.toUpperCase();
+    var value = parseFloat(rawValue);
+    var dateParts = rawDate.split("-");
+    var date = new Date(dateParts[0], dateParts[1], dateParts[2]);
+    var timestamp = date.getTime();
+    return {
+      cat: cat,
+      date: date,
+      timestamp: timestamp,
+      value: value
+    };
+  };
 
-  Highcharts.chart("line-chart", {
-
-    title: {
-      text: "Ejercicio 2"
-    },
-
-    legend: {
-      align: "right",
-      verticalAlign: "middle",
-      layout: "vertical",
-      borderWidth: 0
-    },
-
-    tooltip: {
-      shared: true,
-      crosshairs: true
-    },
-
-    xAxis: {
-      type: "datetime",
-      tickWidth: 0,
-      gridLineWidth: 1,
-    },
-
-    yAxis: {
-      title: {
-        text: null
-      },
-    },
-
-    series: data,
-
-    credits: { enabled: false }
-  });
-
-  Highcharts.chart("pie-chart", {
-
-    title: {
-      text: "Ejercicio 2"
-    },
-
-    chart: {
-      type: "pie"
-    },
-
-    legend: {
-      align: "right",
-      verticalAlign: "middle",
-      layout: "vertical",
-      borderWidth: 0
-    },
-
-    plotOptions: {
-      pie: {
-        dataLabels: {
-          enabled: true,
-          format: "<span>{point.name}</span>: {point.percentage:.1f} %"
-        }
-      }
-    },
-
-    series: [{
-      data: data
-    }],
-
-    credits: { enabled: false }
-  });
-  
+  return {
+    addItem: function (rawDate, rawCat, rawValue) {
+      var normalizedItem = normalizeItem(rawDate, rawCat, rawValue);
+      strategies.forEach(function (strategy) {
+        strategy.addItem(normalizedItem);
+      });
+    }
+  }
 }
 
-function loadData() {
-  var baseUrl = "/api/v1/source";
+function loadData(manager) {
+  var deferred = $.Deferred();
+  var baseUrl = "/api/v1/source/";
   var requests = [
-    $.get(`${baseUrl}/1`),
-    $.get(`${baseUrl}/2`),
-    $.get(`${baseUrl}/3`),
+    $.get(baseUrl + "1"),
+    $.get(baseUrl + "2"),
+    $.get(baseUrl + "3"),
   ];
 
   $.when.apply(null, requests)
-    .done(function (r1, r2, r3) {
-      var groupedMap = {};
-      var categoryMap = {};
+    .done(function (result1, result2, result3) {
 
-      function createItem(date, cat, value) {
-        cat = cat.toUpperCase();
-        value = parseFloat(value);
-        var args = date.split("-");
-        var dateObj = new Date(args[0], args[1], args[2]);
-        var timestamp = dateObj.getTime();
-        var groupedKey = cat + timestamp;
-        groupedMap[groupedKey] = groupedMap[groupedKey] || { date: timestamp, cat: cat, value: 0.0};
-        groupedMap[groupedKey].value += value;
-        categoryMap[cat] = categoryMap[cat] || { name: cat, data: [], y: 0.0 };
-        categoryMap[cat].y += value;
-      }
-
-      var list1 = r1[0];
-      list1.forEach(function (item) {
+      result1[0].forEach(function (item) {
         var date = new Date(item.d).toISOString().substring(0, 10);
-        createItem(date, item.cat, item.value);
+        manager.addItem(date, item.cat, item.value);
       });
 
-      var list2 = r2[0];
-      list2.forEach(function (item) {
+      result2[0].forEach(function (item) {
         var date = item.myDate;
-        createItem(date, item.categ, item.val);
+        manager.addItem(date, item.categ, item.val);
       });
 
-      var list3 = r3[0];
-      list3.forEach(function (item) {
+      result3[0].forEach(function (item) {
         var re1 = /.*?([0-9]{4}-[0-9]{2}-[0-9]{2}).*?/;
-        var re2 = /.*?#(CAT\s?[12])?#.*?/i;
+        var re2 = /.*?#(CAT\s?[1-9])?#.*?/i;
         var match1 = re1.exec(item.raw);
         var match2 = re2.exec(item.raw);
         var date = match1 && match1[1];
         var cat = match2 && match2[1];
-        createItem(date, cat, item.val);
-      });
-      
-      var sortedKeys = Object.keys(groupedMap).sort();
-      sortedKeys.forEach(function (key) {
-        var item = groupedMap[key];
-        categoryMap[item.cat].data.push({ x: item.date, y: item.value });
-        categoryMap[item.cat].y += item.value;
+        manager.addItem(date, cat, item.val);
       });
 
-      generateChart(Object.values(categoryMap));
+    })
+    .always(function () {
+      deferred.resolve();
     });
+
+  return deferred.promise();
 }
 
 window.onload = function () {
-  loadData();
+  var strategy1 = new Strategy1();
+  var strategy2 = new Strategy2();
+  var manager = new itemManager([strategy1, strategy2]);
+  loadData(manager)
+    .then(function () {
+      chartFactory("line-chart", "Line chart", TYPE().LINE, strategy1.getData());
+      chartFactory("pie-chart", "Pie chart", TYPE().PIE, strategy2.getData());
+    });
 };
