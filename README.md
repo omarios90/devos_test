@@ -33,7 +33,7 @@ mock api: https://next.json-generator.com/api/templates/4ystfemFw (data.generate
 #### 1. Normalizar los datos
 ```
 Opción 1:
-Tratar los datos en el servidor - crear un servidor simple para aprovechar la potencia de cálculo y buscar la probabilidad de cachear datos.
+Tratar los datos en el servidor - crear un servidor simple para aprovechar la potencia de cálculo y buscar la probabilidad de cachear datos. (NICE TO HAVE)
 Opción 2:
 Tratar los datos en el cliente. (HECHO)
 
@@ -44,7 +44,7 @@ No tengo permisos a la fuente de datos. Voy a crear un backend que sirva los 3 j
 
 ### Demo
 ```
-Dentro de la carpeta "ejercicio 2" abrir un terminal:
-- "yarn install" o "npm install"
-- "yarn start" o "npm start"
+Dentro de la carpeta "ejercicio 2/nodejs" abrir un terminal:
+- "yarn install" o "npm install" (si es la primera vez)
+- "yarn start" o "npm start" (para ejecutar el servidor)
 ```

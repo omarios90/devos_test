@@ -1,5 +1,5 @@
-const StaticSpec = require("./staticSpec.js");
-const ApiSpec = require("./apiSpec.js");
+const StaticSpec = require("./staticSpec");
+const ApiSpec = require("./apiSpec");
 
 module.exports = ({ url, response }) => {
   const self = {

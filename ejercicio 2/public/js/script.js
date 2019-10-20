@@ -1,4 +1,4 @@
-function itemManager(strategies) {
+var ItemManager = function (strategies) {
   var normalizeItem = function (rawDate, rawCat, rawValue) {
     var cat = rawCat.toUpperCase();
     var value = parseFloat(rawValue);
@@ -21,43 +21,51 @@ function itemManager(strategies) {
       });
     }
   }
-}
+};
 
-function getLocalApiRequests() {
-  var baseUrl = "/api/v1/source/";
-  var requests = [
-    $.get(baseUrl + "1"),
-    $.get(baseUrl + "2"),
-    $.get(baseUrl + "3"),
-  ];
-  return requests;
-}
+var RequestManager = function (isLocal) {
+  var getLocalApiRequests = function () {
+    var baseUrl = "/api/v1/source/";
+    var requests = [
+      $.get(baseUrl + "1"),
+      $.get(baseUrl + "2"),
+      $.get(baseUrl + "3"),
+    ];
+    return requests;
+  };
 
-function getAWSRequests() {
-  var baseUrl = "http://s3.amazonaws.com/logtrust-static/test/test/data#.json";
-  var requests = [
-    $.get(baseUrl.replace("#", "1")),
-    $.get(baseUrl.replace("#", "2")),
-    $.get(baseUrl.replace("#", "3")),
-  ];
-  return requests;
-}
+  var getAWSRequests = function () {
+    var baseUrl = "http://s3.amazonaws.com/logtrust-static/test/test/data#.json";
+    var requests = [
+      $.get(baseUrl.replace("#", "1")),
+      $.get(baseUrl.replace("#", "2")),
+      $.get(baseUrl.replace("#", "3")),
+    ];
+    return requests;
+  };
 
-function loadData(manager) {
+  return {
+    getRequests: !!isLocal
+      ? getLocalApiRequests
+      : getAWSRequests
+  };
+};
+
+function loadData(requestManager, itemManager) {
   var deferred = $.Deferred();
-  var requests = getAWSRequests();
+  var requests = requestManager.getRequests();
 
   $.when.apply(null, requests)
     .done(function (result1, result2, result3) {
 
       result1[0].forEach(function (item) {
         var date = new Date(item.d).toISOString().substring(0, 10);
-        manager.addItem(date, item.cat, item.value);
+        itemManager.addItem(date, item.cat, item.value);
       });
 
       result2[0].forEach(function (item) {
         var date = item.myDate;
-        manager.addItem(date, item.categ, item.val);
+        itemManager.addItem(date, item.categ, item.val);
       });
 
       result3[0].forEach(function (item) {
@@ -67,7 +75,7 @@ function loadData(manager) {
         var match2 = re2.exec(item.raw);
         var date = match1 && match1[1];
         var cat = match2 && match2[1];
-        manager.addItem(date, cat, item.val);
+        itemManager.addItem(date, cat, item.val);
       });
 
     })
@@ -79,10 +87,14 @@ function loadData(manager) {
 }
 
 window.onload = function () {
+  var isLocal = window.location.href.indexOf("localhost") >= 0;
+
   var strategy1 = new Strategy1();
   var strategy2 = new Strategy2();
-  var manager = new itemManager([strategy1, strategy2]);
-  loadData(manager)
+  var itemManager = new ItemManager([strategy1, strategy2]);
+  var requestManager = new RequestManager(isLocal);
+  
+  loadData(requestManager, itemManager)
     .then(function () {
       chartFactory("line-chart", "Line chart", TYPE().LINE, strategy1.getData());
       chartFactory("pie-chart", "Pie chart", TYPE().PIE, strategy2.getData());
