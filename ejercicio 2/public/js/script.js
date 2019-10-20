@@ -23,14 +23,29 @@ function itemManager(strategies) {
   }
 }
 
-function loadData(manager) {
-  var deferred = $.Deferred();
+function getLocalApiRequests() {
   var baseUrl = "/api/v1/source/";
   var requests = [
     $.get(baseUrl + "1"),
     $.get(baseUrl + "2"),
     $.get(baseUrl + "3"),
   ];
+  return requests;
+}
+
+function getAWSRequests() {
+  var baseUrl = "http://s3.amazonaws.com/logtrust-static/test/test/data#.json";
+  var requests = [
+    $.get(baseUrl.replace("#", "1")),
+    $.get(baseUrl.replace("#", "2")),
+    $.get(baseUrl.replace("#", "3")),
+  ];
+  return requests;
+}
+
+function loadData(manager) {
+  var deferred = $.Deferred();
+  var requests = getAWSRequests();
 
   $.when.apply(null, requests)
     .done(function (result1, result2, result3) {
