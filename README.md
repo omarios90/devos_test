@@ -37,4 +37,8 @@ Optimización 2:
 
 Se tiene que hacer menos iteraciones si se busca los divisores con los números primos.
 Otras mejoras:   
-- Persistir el cálculo de los números primos para evitar tener que hacerlo todas las veces.
+- Persistir el cálculo de los números primos para evitar tener que hacerlo todas las veces.   
+Corrección:
+- Es mejor tener obtener los divisores primos sin calcular un listado de números primos a priori.   
+Conclusión:   
+- Esta solución no es óptima porque se tiene que múltiplicar las diferentes subconjuntos de combinaciones de divisores primos.   

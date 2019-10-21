@@ -1,15 +1,13 @@
-from enum import Enum
+import itertools
+from functools import reduce
 from typing import Set, List, Mapping
-
-
-class NumType(Enum):
-    PERFECT = 0
-    ABUNDANT = 1
-    DEFICIENT = 2
+from utils import NumType
 
 
 def get_divisors(num: int) -> Set[int]:
     result = set()
+    if num < 2:
+        return result
     result.add(1)
     for i in range(2, int(num ** 0.5) + 1):
         div = num / i
@@ -17,23 +15,6 @@ def get_divisors(num: int) -> Set[int]:
             result.add(i)
             result.add(int(div))
     return result
-
-
-def get_primes_until(num: int) -> Set[int]:
-    result = set()
-    for i in range(2, num + 1):
-        if is_prime(i):
-            result.add(i)
-    return result
-
-
-def is_prime(num: int) -> bool:
-    if num < 2:
-        return False
-    for i in range(2, int(num ** 0.5) + 1):
-        if num % i == 0:
-            return False
-    return True
 
 
 def get_number_type(num: int) -> NumType:
